@@ -71,7 +71,6 @@ HIST_STAMPS="dd.mm.yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git docker docker-compose zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-autocomplete systemd)
-echo EDITOR='vim'
 
 source $ZSH/oh-my-zsh.sh
 
@@ -79,6 +78,7 @@ source $ZSH/oh-my-zsh.sh
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
+export EDITOR='vim'
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
