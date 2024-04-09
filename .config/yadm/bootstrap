@@ -2,19 +2,24 @@
 
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 
-#Install ZSH
-sudo apt install zsh
+echo $ZSH_CUSTOM
+sudo apt install zsh tmux
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 
-#Install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unanttended --keep-zshrc
 
-#zsh plugins
+#VIM Stuff
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+vim +'PlugInstall --sync' +qall &> /dev/null
+
+#ZSH Stuff
 git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
 git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git $ZSH_CUSTOM/plugins/zsh-autocomplete
 
+#Change shell to zsh
+sudo chsh -s $(which zsh) $(whoami)
 
-#vim stuff
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-vim +PluginInstall +qall > /dev/null
+#tmux
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+tmux run-shell ~/.tmux/plugins/tpm/bindings/install_plugins
