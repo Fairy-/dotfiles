@@ -4,22 +4,64 @@ ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 
 echo $ZSH_CUSTOM
 sudo apt install zsh tmux
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
-
+if [ ! -d "$ZSH" ]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
+fi
 
 #VIM Stuff
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 vim +'PlugInstall --sync' +qall &> /dev/null
 
 #ZSH Stuff
-git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
-git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
-git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git $ZSH_CUSTOM/plugins/zsh-autocomplete
+
+#Autosuggestions
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+	echo "zsh-autosuggestions doesn't exist, pulling repo."
+	git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
+else
+	echo "Updating zsh-autosuggestions."
+	git -C $ZSH_CUSTOM/plugins/zsh-autosuggestions pull
+fi
+
+#Syntax highlighting
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+    echo "zsh-syntax-highlighting doesn't exist, pulling repo."
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+else
+    echo "Updating zsh-syntax-highlighting"
+    git -C $ZSH_CUSTOM/plugins/zsh-syntax-highlighting pull
+fi 
+
+#Fast syntax highlighting
+if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting" ]; then
+    echo "fast-syntax-highlighting doesn't exist, pulling repo."
+    git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
+else
+    echo "Updating fast-syntax-highlighting"
+    git -C ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting pull
+fi
+
+#Autocomplete
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autocomplete" ]; then
+    echo "zsh-autocomplete doesn't exist, pulling repo."
+    git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git $ZSH_CUSTOM/plugins/zsh-autocomplete
+else
+    echo "Updating zsh-autocomplete"
+    git -C $ZSH_CUSTOM/plugins/zsh-autocomplete pull
+fi
 
 #Change shell to zsh
-sudo chsh -s $(which zsh) $(whoami)
+if [ ! -n "$ZSH_VERSION" ]; then
+    echo "Setting default shell to zsh"
+    sudo chsh -s $(which zsh) $(whoami)
+fi
 
 #tmux
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "Pulling tpm"
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+else
+    git -C ~/.tmux/plugins/tpm pull
+fi
+
 tmux run-shell ~/.tmux/plugins/tpm/bindings/install_plugins

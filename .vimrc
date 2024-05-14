@@ -15,3 +15,6 @@ set number
 set ruler
 set visualbell
 
+set tabstop=4
+set shiftwidth=4
+set expandtab
